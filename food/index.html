@@ -76,7 +76,7 @@
 
     <script>
         (function(){
-            emailjs.init("service_4wsh37j"); // Your service ID
+            emailjs.init("NX9OeFmTmWExIYrfJ"); // Your public key
         })();
         
         function sendEmail() {
@@ -102,8 +102,8 @@
                 name: name  // Matches {{name}} in the template
             };
             
-            // Replace "template_o292gtq" with your actual template ID from EmailJS
-            emailjs.send("service_4wsh37j", "template_o292gtq", templateParams)
+            // Using your new service ID "service_1frat1a"
+            emailjs.send("service_1frat1a", "template_o292gtq", templateParams)
                 .then(response => {
                     alert("Your response has been sent!");
                 }, error => {
