@@ -33,12 +33,21 @@
             color: white;
             border-radius: 5px;
         }
+        .error {
+            color: red;
+        }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
 </head>
 <body>
     <div class="container">
         <h1>Birthday Party Preferences</h1>
+        
+        <!-- Name Input -->
+        <label for="name">Your Name:</label>
+        <input type="text" id="name" placeholder="Enter your name" />
+        <div id="nameError" class="error" style="display: none;">This name is not available. Please choose from Julia, Melisa, Gezime, Arnisa, or Kristi.</div>
+        
         <label for="language">Language / Sprache:</label>
         <select id="language">
             <option value="en">English</option>
@@ -67,11 +76,22 @@
 
     <script>
         (function(){
-            emailjs.init("service_4wsh37j");
+            emailjs.init("service_4wsh37j"); // Your service ID
         })();
         
         function sendEmail() {
+            const allowedNames = ["julia", "melisa", "gezime", "arnisa", "kristi"];
+            const name = document.getElementById("name").value.toLowerCase();
+            
+            if (!allowedNames.includes(name)) {
+                document.getElementById("nameError").style.display = "block";
+                return;
+            } else {
+                document.getElementById("nameError").style.display = "none";
+            }
+            
             const templateParams = {
+                name: name,
                 likes: document.getElementById("likes").value,
                 dislikes: document.getElementById("dislikes").value,
                 meal: document.getElementById("meal").value,
@@ -79,6 +99,7 @@
                 language: document.getElementById("language").value
             };
             
+            // Replace "template_o292gtq" with your actual template ID from EmailJS
             emailjs.send("service_4wsh37j", "template_o292gtq", templateParams)
                 .then(response => {
                     alert("Your response has been sent!");
