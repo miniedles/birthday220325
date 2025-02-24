@@ -46,7 +46,7 @@
         <!-- Name Input -->
         <label for="name">Your Name:</label>
         <input type="text" id="name" placeholder="Enter your name" />
-        <div id="nameError" class="error" style="display: none;">This name is not available.</div>
+        <div id="nameError" class="error" style="display: none;">This name is not available. Please choose from Julia, Melisa, Gezime, Arnisa, or Kristi.</div>
         
         <label for="language">Language / Sprache:</label>
         <select id="language">
@@ -91,12 +91,15 @@
             }
             
             const templateParams = {
-                name: name,
-                likes: document.getElementById("likes").value,
+                from_name: name,  // Matches {{from_name}} in the template
+                message: document.getElementById("likes").value + "\n" + document.getElementById("dislikes").value,  // Combined message from likes and dislikes
+                songs: "",  // Add any song-related data if applicable, or leave empty if not needed
                 dislikes: document.getElementById("dislikes").value,
+                likes: document.getElementById("likes").value,
                 meal: document.getElementById("meal").value,
                 wine: document.getElementById("wine").value,
-                language: document.getElementById("language").value
+                language: document.getElementById("language").value,
+                name: name  // Matches {{name}} in the template
             };
             
             // Replace "template_o292gtq" with your actual template ID from EmailJS
