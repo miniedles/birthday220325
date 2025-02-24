@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Form Birthdayparty</title>
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Amiri&display=swap');
+        body {
+            font-family: 'Amiri', serif;
+            text-align: center;
+            padding: 20px;
+            background-color: #F9D4E5;
+            color: #FFF;
+        }
+        .hidden {
+            display: none;
+        }
+        input, button, select, textarea {
+            padding: 10px;
+            font-size: 16px;
+            margin: 5px;
+            width: 80%;
+            max-width: 300px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-family: 'Amiri', serif;
+        }
+        button {
+            background-color: white;
+            color: black;
+            border: 1px solid black;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #f9d4e5;
+        }
+        #songList {
+            margin-top: 20px;
+        }
+    </style>
+    <script>
+        emailjs.init("NX9OeFmTmWExIYrfJ");
+        
+        let lang = "en";
+
+        function changeLanguage() {
+            lang = document.getElementById("languageSelect").value;
+            document.getElementById("nameLabel").textContent = lang === "de" ? "Gib deinen Namen ein" : "Enter Your Name";
+            document.getElementById("submitButton").textContent = lang === "de" ? "Absenden" : "Submit";
+            document.getElementById("songLabel").textContent = lang === "de" ? "Schlage Songs für die Playlist vor" : "Suggest Songs for the Playlist";
+            document.getElementById("songInput").placeholder = lang === "de" ? "Song-Link eingeben" : "Enter song link";
+            document.getElementById("addSongButton").textContent = lang === "de" ? "Song hinzufügen" : "Add Song";
+            document.getElementById("sendButton").textContent = lang === "de" ? "Ergebnisse senden" : "Send Results";
+            document.getElementById("questionLabel").textContent = lang === "de" ? "Hast du Fragen?" : "Have any questions?";
+            document.getElementById("questionInput").placeholder = lang === "de" ? "Schreibe deine Frage hier" : "Type your question here";
+            document.getElementById("sendQuestionButton").textContent = lang === "de" ? "Frage senden" : "Send Question";
+        }
+
+        function checkName(event) {
+            event.preventDefault();
+            let name = document.getElementById("nameInput").value.toLowerCase().trim();
+            let messageBox = document.getElementById("message");
+            let songSection = document.getElementById("songSection");
+            
+            const snackMessages = {
+                "julia": { "en": "You should bring salty snacks", "de": "Du sollst salzige Snacks mitbringen" },
+                "melisa": { "en": "You should bring sweet snacks", "de": "Du sollst süsse Snacks mitbringen" },
+                "gezime": { "en": "You should bring salty snacks", "de": "Du sollst salzige Snacks mitbringen" },
+                "kristi": { "en": "You should bring sweet snacks", "de": "Du sollst süsse Snacks mitbringen" },
+                "arnisa": { "en": "You should bring salty snacks", "de": "Du sollst salzige Snacks mitbringen" }
+            };
+
+            if (snackMessages[name]) {
+                messageBox.textContent = snackMessages[name][lang];
+                messageBox.classList.remove("hidden");
+                songSection.classList.remove("hidden");
+            } else {
+                messageBox.textContent = lang === "de" ? "Dein Name ist nicht verfügbar." : "There's nothing available for your name.";
+                messageBox.classList.remove("hidden");
+                songSection.classList.add("hidden");
+            }
+        }
+
+        function addSong() {
+            let songInput = document.getElementById("songInput");
+            let songList = document.getElementById("songList");
+            if (songInput.value.trim() !== "") {
+                let listItem = document.createElement("li");
+                listItem.innerHTML = `<a href="${songInput.value}" target="_blank">${songInput.value}</a>`;
+                songList.appendChild(listItem);
+                songInput.value = "";
+            }
+        }
+
+        function sendResults() {
+            let name = document.getElementById("nameInput").value.trim();
+            let message = document.getElementById("message").textContent;
+            let songs = Array.from(document.querySelectorAll("#songList li a"))
+                .map(a => a.href)
+                .join("\n");
+
+            emailjs.send("service_4wsh37j", "template_o292gtq", {
+                from_name: name,
+                message: message,
+                songs: songs,
+                to_email: "miniedles@gmail.com"
+            });
+        }
+
+        function sendQuestion() {
+            let name = document.getElementById("nameInput").value.trim();
+            let question = document.getElementById("questionInput").value.trim();
+            if (question !== "") {
+                emailjs.send("service_4wsh37j", "template_o292gtq", {
+                    from_name: name,
+                    message: question,
+                    to_email: "miniedles@gmail.com"
+                });
+            }
+        }
+    </script>
+</head>
+<body>
+    <select id="languageSelect" onchange="changeLanguage()">
+        <option value="en">English</option>
+        <option value="de">Deutsch</option>
+    </select>
+
+    <h2 id="nameLabel">Enter Your Name</h2>
+    <form onsubmit="checkName(event)">
+        <input type="text" id="nameInput" required placeholder="Type your name">
+        <button type="submit" id="submitButton">Submit</button>
+    </form>
+
+    <h3 id="message" class="hidden"></h3>
+
+    <div id="songSection" class="hidden">
+        <h3 id="songLabel">Suggest Songs for the Playlist</h3>
+        <input type="url" id="songInput" placeholder="Enter song link">
+        <button onclick="addSong()" id="addSongButton">Add Song</button>
+        <ul id="songList"></ul>
+        <button onclick="sendResults()" id="sendButton">Send Results</button>
+    </div>
+
+    <div id="questionSection">
+        <h3 id="questionLabel">Have any questions?</h3>
+        <textarea id="questionInput" placeholder="Type your question here"></textarea>
+        <button onclick="sendQuestion()" id="sendQuestionButton">Send Question</button>
+    </div>
+</body>
+</html>
